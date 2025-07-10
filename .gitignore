@@ -1,0 +1,57 @@
+# Node modules
+node_modules/
+.npm/
+
+# Android
+android/build/
+android/app/build/
+android/.gradle/
+android/app/.gradle/
+android/app/*.iml
+android/*.iml
+android/local.properties
+android/key.properties
+android/debug.keystore
+android/app/src/debug/
+android/gradle-wrapper-temp/
+
+# iOS
+ios/build/
+ios/Pods/
+ios/.symlinks/
+ios/.xcode.env.local
+ios/*.xcworkspace
+ios/*.xcodeproj
+ios/*.xcscheme
+ios/DerivedData/
+
+# Metro
+.expo/
+.expo-shared/
+.yarn/
+.yarn-cache/
+
+# React Native specific
+*.log
+*.rn-debugger-config
+*.packager-cache
+*.mobileconfig
+*.ipa
+*.apk
+*.aab
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Other temporary files
+temp/
+tmp/
+coverage/
