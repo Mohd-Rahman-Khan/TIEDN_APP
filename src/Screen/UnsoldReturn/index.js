@@ -246,7 +246,7 @@ const UnsoldRetun = ({ navigation }) => {
   const supplyApiFailureAlert = (apiName) => {
     Alert.alert(
       "Information!",
-      "Supply not updated for the selected date.",
+      "Supply not found.",
       [
         {
           text: "OK",

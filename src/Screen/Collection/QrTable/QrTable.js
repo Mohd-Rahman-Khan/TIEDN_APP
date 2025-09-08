@@ -1,17 +1,17 @@
-import {View, Text, TouchableOpacity, Image} from 'react-native';
-import React from 'react';
-import COLORS from '../../../GlobalConstants/COLORS';
-import styles from '../styles';
-import images from '../../../Image';
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import React from "react";
+import COLORS from "../../../GlobalConstants/COLORS";
+import styles from "../styles";
+import images from "../../../Image";
 
 export default function QrTable({
   scanQrIds,
-  onCancelButtonCLick = renderData => {},
+  onCancelButtonCLick = (renderData) => {},
   headingTitle,
 }) {
   return (
     <>
-      <View style={{marginTop: 20, marginHorizontal: 10}}>
+      <View style={{ marginTop: 20, marginHorizontal: 10 }}>
         <Text style={styles.validCouponText}>
           Total {headingTitle} Coupon - {scanQrIds.length}
         </Text>
@@ -19,56 +19,62 @@ export default function QrTable({
       <View
         style={{
           marginTop: 20,
-          backgroundColor: 'white',
-        }}>
+          backgroundColor: "white",
+        }}
+      >
         <View
           style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
+            flexDirection: "row",
+            justifyContent: "space-between",
             height: 40,
             marginHorizontal: 10,
-          }}>
+          }}
+        >
           <View
             style={{
-              width: '15%',
+              width: "15%",
               borderRightColor: COLORS.lightGreyBorder,
               borderRightWidth: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Text style={styles.tableListText}>S.No.</Text>
           </View>
           <View
             style={{
-              width: '25%',
+              width: "25%",
               borderRightColor: COLORS.lightGreyBorder,
               borderRightWidth: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Text style={styles.tableListText}>Coupon Id</Text>
           </View>
           <View
             style={{
-              width: '40%',
-              justifyContent: 'center',
-              alignItems: 'center',
+              width: "40%",
+              justifyContent: "center",
+              alignItems: "center",
               borderRightColor: COLORS.lightGreyBorder,
               borderRightWidth: 1,
-            }}>
+            }}
+          >
             <Text style={styles.tableListText}>Vendor Name</Text>
           </View>
           <View
             style={{
-              width: '16%',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+              width: "16%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Text style={styles.tableListText}>Action</Text>
           </View>
         </View>
         {scanQrIds.map((item, index) => {
-          let renderData = item.split('$');
+          let renderData = item.split("$");
 
           return (
             <View key={index + 1}>
@@ -76,56 +82,62 @@ export default function QrTable({
                 style={{
                   height: 1,
                   backgroundColor: COLORS.lightGreyBorder,
-                  width: '100%',
-                }}></View>
+                  width: "100%",
+                }}
+              ></View>
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                   //paddingTop: 10,
                   paddingHorizontal: 10,
                   height: 40,
-                }}>
+                }}
+              >
                 <View
                   style={{
-                    width: '15%',
+                    width: "15%",
                     borderRightColor: COLORS.lightGreyBorder,
                     borderRightWidth: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <Text style={styles.tableListDetailText}>{index + 1}</Text>
                 </View>
                 <View
                   style={{
-                    width: '25%',
+                    width: "25%",
                     borderRightColor: COLORS.lightGreyBorder,
                     borderRightWidth: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <Text style={styles.tableListDetailText} numberOfLines={1}>
                     {renderData?.length == 6 ? renderData[0] : renderData[1]}
                   </Text>
                 </View>
                 <View
                   style={{
-                    width: '40%',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    width: "40%",
+                    justifyContent: "center",
+                    alignItems: "center",
                     borderRightColor: COLORS.lightGreyBorder,
                     borderRightWidth: 1,
-                  }}>
+                  }}
+                >
                   <Text style={styles.tableListDetailText} numberOfLines={1}>
-                    {renderData?.length == 6 ? renderData[5] : '--'}
+                    {renderData?.length == 6 ? renderData[5] : "--"}
                   </Text>
                 </View>
                 <View
                   style={{
-                    width: '16%',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
+                    width: "16%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <TouchableOpacity
                     onPress={() => {
                       onCancelButtonCLick(renderData);
@@ -136,17 +148,18 @@ export default function QrTable({
                       borderWidth: 1,
                       borderColor: COLORS.lightGreyBorder,
                       borderRadius: 50,
-                      justifyContent: 'center',
-                      alignItems: 'center',
+                      justifyContent: "center",
+                      alignItems: "center",
                       backgroundColor:
-                        headingTitle == 'Valid' ? 'green' : 'red',
-                    }}>
+                        headingTitle == "Valid" ? "green" : "red",
+                    }}
+                  >
                     <Image
                       source={images.closeIcon}
                       style={{
                         width: 12,
                         height: 12,
-                        tintColor: 'white',
+                        tintColor: "white",
                       }}
                     />
                   </TouchableOpacity>

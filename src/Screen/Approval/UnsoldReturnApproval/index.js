@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,16 +8,16 @@ import {
   Alert,
   Dimensions,
   TextInput,
-} from 'react-native';
-import images from '../../../Image';
-import COLORS from '../../../GlobalConstants/COLORS';
-import {ButtonView} from '../../../Helper/buttonView';
-import auth from '../../../api/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import NavigationService from '../../../Navigation/RootNavigator/NavigationService';
+} from "react-native";
+import images from "../../../Image";
+import COLORS from "../../../GlobalConstants/COLORS";
+import { ButtonView } from "../../../Helper/buttonView";
+import auth from "../../../api/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import NavigationService from "../../../Navigation/RootNavigator/NavigationService";
 // ??? unsold_return_id in edit concept
 
-const screenWidth = Dimensions.get('screen').width;
+const screenWidth = Dimensions.get("screen").width;
 
 export default function UnsoldReturnApproval(props) {
   const route = props.route;
@@ -34,34 +34,34 @@ export default function UnsoldReturnApproval(props) {
   }, []);
 
   const getUserDetails = async () => {
-    const userData1 = await AsyncStorage.getItem('InExUserDetails');
+    const userData1 = await AsyncStorage.getItem("InExUserDetails");
     const userData = JSON.parse(userData1);
     setUserLoginedDetails(userData);
-    if (userData?.role == 'Circulation Executive') {
+    if (userData?.role == "Circulation Executive") {
       setSupplyEdit(false);
     }
-    if (userData?.role == 'Circulation Executive') {
+    if (userData?.role == "Circulation Executive") {
       setIsCirEX(true);
     }
   };
 
-  const apiFailureAlert = apiName => {
+  const apiFailureAlert = (apiName) => {
     Alert.alert(
-      'oops!',
-      'something went wrong, please try later!',
+      "oops!",
+      "something went wrong, please try later!",
       [
         {
-          text: 'OK',
+          text: "OK",
           onPress: async () => {},
         },
       ],
-      {cancelable: false},
+      { cancelable: false }
     );
   };
 
   const getSingleRecordApi = async () => {
-    const token = await AsyncStorage.getItem('InExToken');
-    const userId = await AsyncStorage.getItem('InExUserId');
+    const token = await AsyncStorage.getItem("InExToken");
+    const userId = await AsyncStorage.getItem("InExUserId");
     let dataObj = {
       userId: userId,
       isForMobile: true,
@@ -72,31 +72,31 @@ export default function UnsoldReturnApproval(props) {
     };
 
     const response = await auth.unsoldReturnApproval(dataObj, token);
-    console.log('getSingleRecordApi', response);
-    console.log('getSingleRecordApi', dataObj);
+    console.log("getSingleRecordApi", response);
+    console.log("getSingleRecordApi", dataObj);
 
     if (response?.status != 200) {
-      apiFailureAlert('getSingleRecordApi');
+      apiFailureAlert("getSingleRecordApi");
     } else {
       const tempArray = [...response.data?.data];
       // const filteredData = tempArray.filter(
       //   e => e.approval_status === route?.params?.approvalStatus,
       // );
       tempArray.map(
-        e => (
+        (e) => (
           (e.isEditFlag = false),
           (e.newTotalSupplyVal = e.total_supply),
           (e.newUnsoldVal = e.unsold),
           (e.newSupplyReturnVal = e.supply_return)
-        ),
+        )
       );
       setRecordsArr(tempArray);
     }
   };
 
-  const editRecordApi = async item => {
-    const token = await AsyncStorage.getItem('InExToken');
-    const userId = await AsyncStorage.getItem('InExUserId');
+  const editRecordApi = async (item) => {
+    const token = await AsyncStorage.getItem("InExToken");
+    const userId = await AsyncStorage.getItem("InExUserId");
 
     let dataObj = {
       unsold_return_id: item?.unsold_return_id,
@@ -113,32 +113,32 @@ export default function UnsoldReturnApproval(props) {
       subscriptions: item?.subscriptions,
     };
     if (item?.approval_status == 2) {
-      Object.assign(dataObj, {approval_status: '_0'});
+      Object.assign(dataObj, { approval_status: "_0" });
     }
 
     const response = await auth.unsoldReturnSubmit(dataObj, token);
     Alert.alert(
-      'Record saved!',
-      'Record updated successfully.',
+      "Record saved!",
+      "Record updated successfully.",
       [
         {
-          text: 'OK',
+          text: "OK",
           onPress: () => {
             // props.navigation.goBack();
             getSingleRecordApi();
           },
         },
       ],
-      {cancelable: false},
+      { cancelable: false }
     );
   };
 
   const approvedRejectRecordApi = async (status, item) => {
-    const token = await AsyncStorage.getItem('InExToken');
-    const userId = await AsyncStorage.getItem('InExUserId');
+    const token = await AsyncStorage.getItem("InExToken");
+    const userId = await AsyncStorage.getItem("InExUserId");
     let dataObj = {
       id: item?.unsold_return_id, //row id
-      module: 'unsold_return', // or collection
+      module: "unsold_return", // or collection
       user_id: userId, //logged in
       approval_status: status, // _1 -> approve or _2 --> reject
     };
@@ -146,22 +146,22 @@ export default function UnsoldReturnApproval(props) {
     const response = await auth.approveRejectCommon(dataObj, token);
 
     if (response?.status != 200) {
-      apiFailureAlert('approvedRejectRecordApi');
+      apiFailureAlert("approvedRejectRecordApi");
     } else {
       Alert.alert(
-        'Record saved!',
-        'Request submit successfully.',
+        "Record saved!",
+        "Request submit successfully.",
         [
           {
-            text: 'OK',
+            text: "OK",
             onPress: () => {
               getSingleRecordApi();
               if (route.params.navigation) {
                 route.params.navigation.navigate(
-                  'UnsoldReturnApprovalDashboard',
+                  "UnsoldReturnApprovalDashboard",
                   {
                     roleBasedGrid: 1,
-                  },
+                  }
                 );
               } else {
                 route?.params?.onGoBack();
@@ -169,21 +169,21 @@ export default function UnsoldReturnApproval(props) {
             },
           },
         ],
-        {cancelable: false},
+        { cancelable: false }
       );
-      if (status == '_1') {
+      if (status == "_1") {
         let tempObj = {
           login_id: item?.ship_to_code,
-          title: 'Daily Sales Report Approval',
-          message: 'Your request approved successfully.',
+          title: "Daily Sales Report Approval",
+          message: "Your request approved successfully.",
         };
         //await auth.sendNotification(tempObj, token);
       }
-      if (status == '_2') {
+      if (status == "_2") {
         let tempObj = {
           login_id: item?.ship_to_code,
-          title: 'Daily Sales Report Approval',
-          message: 'Your request rejected.',
+          title: "Daily Sales Report Approval",
+          message: "Your request rejected.",
         };
         //ssawait auth.sendNotification(tempObj, token);
       }
@@ -195,28 +195,29 @@ export default function UnsoldReturnApproval(props) {
       <View
         style={{
           //   backgroundColor: 'red',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
+          flexDirection: "row",
+          justifyContent: "space-between",
           marginVertical: 12,
-        }}>
-        <Text style={{fontSize: 16}}>{label}</Text>
+        }}
+      >
+        <Text style={{ fontSize: 16 }}>{label}</Text>
         {editable ? (
           <TextInput
             style={{
               fontSize: 16,
-              textAlign: 'right',
+              textAlign: "right",
               borderWidth: 1,
-              borderColor: 'lightgrey',
+              borderColor: "lightgrey",
               height: 26,
-              width: '30%',
+              width: "30%",
               paddingVertical: 1,
             }}
             value={value.toString()}
-            keyboardType={'numeric' || 'number-pad'}
+            keyboardType={"numeric" || "number-pad"}
             onChangeText={handleTextChange}
             editable={
-              label === 'SUPPLY' &&
-              userLoginedDetails?.role === 'Regional Manager'
+              label === "SUPPLY" &&
+              userLoginedDetails?.role === "Regional Manager"
                 ? false
                 : true
             }
@@ -225,10 +226,11 @@ export default function UnsoldReturnApproval(props) {
           <Text
             style={{
               fontSize: 16,
-              textAlign: 'center',
+              textAlign: "center",
               color: editable ? COLORS.redPrimary : COLORS.black,
-              textDecorationLine: editable ? 'underline' : 'none',
-            }}>
+              textDecorationLine: editable ? "underline" : "none",
+            }}
+          >
             {value}
           </Text>
         )}
@@ -253,7 +255,7 @@ export default function UnsoldReturnApproval(props) {
       setRecordsArr(tempArray);
     } else {
       // Reject
-      approvedRejectRecordApi('_2', item);
+      approvedRejectRecordApi("_2", item);
     }
   };
   const handlePressSaveApprove = (index, item) => {
@@ -262,49 +264,52 @@ export default function UnsoldReturnApproval(props) {
       editRecordApi(item);
     } else {
       // Approve
-      approvedRejectRecordApi('_1', item);
+      approvedRejectRecordApi("_1", item);
     }
   };
 
   const unsoldReturnRenderItemView = (item, index) => {
-    console.log('unsoldReturnRenderItemView', item);
+    console.log("unsoldReturnRenderItemView", item);
     return (
       <View
         style={{
-          backgroundColor: 'white',
+          backgroundColor: "white",
           padding: 10,
           borderRadius: 10,
           //   marginRight: 12,
           marginVertical: 8,
-        }}>
-        {userLoginedDetails?.role == 'City Head' ||
-        (userLoginedDetails?.role == 'Circulation Executive' &&
-          item?.is_verified == 'true') ? null : (
+        }}
+      >
+        {userLoginedDetails?.role == "City Head" ||
+        (userLoginedDetails?.role == "Circulation Executive" &&
+          item?.is_verified == "true") ? null : (
           <>
             {item?.approval_status == 0 && !item?.isEditFlag && (
-              <View style={{paddingBottom: 5}}>
+              <View style={{ paddingBottom: 5 }}>
                 <TouchableOpacity
-                  style={{flex: 1}}
+                  style={{ flex: 1 }}
                   onPress={() => {
                     editHandlePress(index, item);
-                  }}>
+                  }}
+                >
                   <Image
                     source={images.editIcon}
-                    style={{width: 18, height: 18, alignSelf: 'center'}}
+                    style={{ width: 18, height: 18, alignSelf: "center" }}
                   />
                 </TouchableOpacity>
               </View>
             )}
             {item?.approval_status == 2 && isCirEX && !item?.isEditFlag && (
-              <View style={{paddingBottom: 5}}>
+              <View style={{ paddingBottom: 5 }}>
                 <TouchableOpacity
-                  style={{flex: 1}}
+                  style={{ flex: 1 }}
                   onPress={() => {
                     editHandlePress(index, item);
-                  }}>
+                  }}
+                >
                   <Image
                     source={images.editIcon}
-                    style={{width: 18, height: 18, alignSelf: 'center'}}
+                    style={{ width: 18, height: 18, alignSelf: "center" }}
                   />
                 </TouchableOpacity>
               </View>
@@ -312,155 +317,169 @@ export default function UnsoldReturnApproval(props) {
           </>
         )}
 
-        {item?.types == 'Depot'
+        {item?.types == "Depot"
           ? item?.users_name?.length > 0
             ? renderRowView(
-                'Depot Name',
+                "Depot Name",
                 item?.users_name[0],
                 false,
                 1,
-                text => {},
+                (text) => {}
               )
             : null
           : null}
 
         {renderRowView(
-          'PUBLICATION',
+          "PUBLICATION",
           item?.publication_name,
           false,
           1,
-          text => {},
+          (text) => {}
         )}
         {renderRowView(
-          'SUPPLY',
+          "SUPPLY",
           item?.newTotalSupplyVal,
           !supplyEdit
             ? supplyEdit
             : item?.approval_status == 0 && item?.isEditFlag,
           2,
-          text => {
+          (text) => {
             const array = [...recordsArr];
             array[index].newTotalSupplyVal = text;
             setRecordsArr(array);
-          },
+          }
         )}
-        {renderRowView('SUBSCRIPTIONS', item?.subscriptions, false, 3, text => {
-          const array = [...recordsArr];
-          array[index].newTotalSupplyVal = text;
-          setRecordsArr(array);
-        })}
         {renderRowView(
-          'COMPLEMENTARY',
+          "SUBSCRIPTIONS",
+          item?.subscriptions,
+          false,
+          3,
+          (text) => {
+            const array = [...recordsArr];
+            array[index].newTotalSupplyVal = text;
+            setRecordsArr(array);
+          }
+        )}
+        {renderRowView(
+          "COMPLEMENTARY",
           item?.complementary,
           false,
           (item?.approval_status == 0 || isCirEX) && item?.isEditFlag,
           3,
-          text => {
+          (text) => {
             const array = [...recordsArr];
             array[index].newTotalSupplyVal = text;
             setRecordsArr(array);
-          },
+          }
         )}
         {renderRowView(
-          'FRESH UNSOLD',
+          "FRESH UNSOLD",
           item?.newUnsoldVal,
           (item?.approval_status == 0 || isCirEX) && item?.isEditFlag,
           3,
-          text => {
+          (text) => {
             const array = [...recordsArr];
             array[index].newUnsoldVal = text;
             setRecordsArr(array);
-          },
+          }
         )}
         {renderRowView(
-          'RETURN',
+          "RETURN",
           item?.newSupplyReturnVal,
           (item?.approval_status == 0 || isCirEX) && item?.isEditFlag,
           4,
-          text => {
+          (text) => {
             const array = [...recordsArr];
             array[index].newSupplyReturnVal = text;
             setRecordsArr(array);
-          },
+          }
         )}
         {renderRowView(
-          'NPS',
+          "NPS",
           item?.newTotalSupplyVal -
             item?.newUnsoldVal -
             item?.newSupplyReturnVal,
           false,
           5,
-          text => {},
+          (text) => {}
         )}
 
         {item?.approval_status != 0 && (
-          <View style={{height: 1, backgroundColor: 'grey'}} />
+          <View style={{ height: 1, backgroundColor: "grey" }} />
         )}
 
-        {item?.approval_status != 0 || item?.is_verified == 'true' ? (
+        {item?.approval_status != 0 || item?.is_verified == "true" ? (
           <View
             style={{
               //   backgroundColor: 'red',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
+              flexDirection: "row",
+              justifyContent: "space-between",
               marginVertical: 12,
-            }}>
-            <Text style={{fontSize: 16}}>{'STATUS'}</Text>
-            {item?.is_verified == 'true' ? (
+            }}
+          >
+            <Text style={{ fontSize: 16 }}>{"STATUS"}</Text>
+            {item?.is_verified == "true" ? (
               <Text
                 style={{
                   fontSize: 16,
-                  textAlign: 'right',
+                  textAlign: "right",
                   height: 26,
-                  width: '30%',
+                  width: "30%",
                   paddingVertical: 1,
-                  color: 'green',
-                }}>
+                  color: "green",
+                }}
+              >
                 VERIFIED
               </Text>
             ) : (
               <Text
                 style={{
                   fontSize: 16,
-                  textAlign: 'right',
+                  textAlign: "right",
                   height: 26,
-                  width: '30%',
+                  width: "30%",
                   paddingVertical: 1,
                   color:
                     item?.approval_status == 1
-                      ? 'green'
+                      ? "green"
                       : item?.approval_status == 0
-                        ? 'black'
-                        : 'red',
-                }}>
+                        ? "black"
+                        : "red",
+                }}
+              >
                 {item?.approval_status == 1
-                  ? 'APPROVED'
+                  ? "APPROVED"
                   : item?.approval_status == 0
-                    ? 'PENDING'
-                    : 'REJECTED'}
+                    ? "PENDING"
+                    : "REJECTED"}
               </Text>
             )}
           </View>
         ) : null}
 
         {item?.approval_status != 0 && (
-          <View style={{height: 1, backgroundColor: 'grey'}} />
+          <View style={{ height: 1, backgroundColor: "grey" }} />
         )}
 
-        {userLoginedDetails?.role == 'City Head' ? null : (
+        {userLoginedDetails?.role == "City Head" ? null : (
           <>
             {item?.approval_status == 0 && !isCirEX && (
               <View
-                style={{bottom: 0, flexDirection: 'row', marginHorizontal: 10}}>
+                style={{
+                  bottom: 0,
+                  flexDirection: "row",
+                  marginHorizontal: 10,
+                }}
+              >
                 <ButtonView
-                  title={item?.isEditFlag ? 'CANCEL' : 'REJECT'}
+                  title={item?.isEditFlag ? "CANCEL" : "REJECT"}
                   isPrimary={false}
-                  textStyle={{color: COLORS.redPrimary}}
-                  btnStyle={{marginRight: 8, marginHorizontal: 0}}
+                  textStyle={{ color: COLORS.redPrimary }}
+                  btnStyle={{ marginRight: 8, marginHorizontal: 0 }}
                   onBtnPress={() => handlePressCancelReject(index, item)}
                 />
                 <ButtonView
-                  title={item?.isEditFlag ? 'SAVE' : 'APPROVE'}
+                  title={item?.isEditFlag ? "SAVE" : "APPROVE"}
                   onBtnPress={() => handlePressSaveApprove(index, item)}
                 />
               </View>
@@ -471,18 +490,19 @@ export default function UnsoldReturnApproval(props) {
                 <View
                   style={{
                     bottom: 0,
-                    flexDirection: 'row',
+                    flexDirection: "row",
                     marginHorizontal: 10,
-                  }}>
+                  }}
+                >
                   <ButtonView
-                    title={'CANCEL'}
+                    title={"CANCEL"}
                     isPrimary={false}
-                    textStyle={{color: COLORS.redPrimary}}
-                    btnStyle={{marginRight: 8, marginHorizontal: 0}}
+                    textStyle={{ color: COLORS.redPrimary }}
+                    btnStyle={{ marginRight: 8, marginHorizontal: 0 }}
                     onBtnPress={() => handlePressCancelReject(index, item)}
                   />
                   <ButtonView
-                    title={'VERIFY'}
+                    title={"VERIFY"}
                     onBtnPress={() => {
                       handlePressSaveApprove(index, item);
                     }}
@@ -491,7 +511,7 @@ export default function UnsoldReturnApproval(props) {
               )}
           </>
         )}
-        {item?.types == 'Depot'
+        {item?.types == "Depot"
           ? null
           : item?.users_name?.length > 0
             ? item?.users_name.map((listItem, index) => {
@@ -499,30 +519,33 @@ export default function UnsoldReturnApproval(props) {
                   <View
                     key={index}
                     style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                       borderBottomWidth: 0.4,
                       borderBlockColor: COLORS.black,
                       paddingVertical: 10,
-                    }}>
-                    <View style={{width: '8%'}}>
+                    }}
+                  >
+                    <View style={{ width: "8%" }}>
                       <Text
                         style={{
                           fontSize: 16,
-                          color: 'black',
-                          fontWeight: '400',
-                        }}>
+                          color: "black",
+                          fontWeight: "400",
+                        }}
+                      >
                         {index + 1}-
                       </Text>
                     </View>
-                    <View style={{width: '88%'}}>
+                    <View style={{ width: "88%" }}>
                       <Text
                         style={{
                           fontSize: 16,
-                          color: 'black',
-                          fontWeight: '400',
-                        }}>
+                          color: "black",
+                          fontWeight: "400",
+                        }}
+                      >
                         {listItem}
                       </Text>
                     </View>
@@ -540,36 +563,40 @@ export default function UnsoldReturnApproval(props) {
         <FlatList
           // horizontal={true}
           data={recordsArr}
-          style={{marginHorizontal: 12, marginTop: 6}}
-          renderItem={({item, index}) =>
+          style={{ marginHorizontal: 12, marginTop: 6 }}
+          renderItem={({ item, index }) =>
             unsoldReturnRenderItemView(item, index)
           }
           ListHeaderComponent={
             <View
               style={{
-                flexDirection: 'column',
-                alignItems: 'center',
+                flexDirection: "column",
+                alignItems: "center",
                 margin: 16,
-              }}>
-              <Image source={images.return} style={{width: 55, height: 55}} />
+              }}
+            >
+              <Image source={images.return} style={{ width: 55, height: 55 }} />
               <Text
                 style={{
                   color: COLORS.redPrimary,
                   fontSize: 18,
-                  fontWeight: '600',
+                  fontWeight: "600",
                   marginTop: 6,
-                }}>
+                }}
+              >
                 Daily Sales Report Approval
               </Text>
               <Text
-                style={{color: COLORS.black, fontWeight: '500', marginTop: 6}}>
+                style={{ color: COLORS.black, fontWeight: "500", marginTop: 6 }}
+              >
                 {recordsArr.length > 0 && recordsArr[0].parcel_depot_name
                   ? recordsArr[0]?.parcel_depot_name
-                  : recordsArr[0]?.user_name_created_by}{' '}
+                  : recordsArr[0]?.user_name_created_by}{" "}
                 - {route.params?.shipToCode}
               </Text>
               <Text
-                style={{color: COLORS.black, fontWeight: '500', marginTop: 6}}>
+                style={{ color: COLORS.black, fontWeight: "500", marginTop: 6 }}
+              >
                 {route.params?.publicationDate}
               </Text>
             </View>

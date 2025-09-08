@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,57 +11,57 @@ import {
   Pressable,
   Linking,
   // AppState
-} from 'react-native';
-import images from '../../Image';
-import styles from './styles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import RazorpayCheckout from 'react-native-razorpay';
-import NavigationService from '../../Navigation/RootNavigator/NavigationService';
+} from "react-native";
+import images from "../../Image";
+import styles from "./styles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import RazorpayCheckout from "react-native-razorpay";
+import NavigationService from "../../Navigation/RootNavigator/NavigationService";
 //import Geolocation from '@react-native-community/geolocation';
-import Geolocation from 'react-native-geolocation-service';
-import moment from 'moment';
-import auth from '../../api/auth';
-import {connect} from 'react-redux';
-import {checkInAction} from './action';
-import Card from '../../comonent/Card';
-import {apiKey} from '../../config';
-import AppLoader from '../../Helper/AppIndicator';
+import Geolocation from "react-native-geolocation-service";
+import moment from "moment";
+import auth from "../../api/auth";
+import { connect } from "react-redux";
+import { checkInAction } from "./action";
+import Card from "../../comonent/Card";
+import { apiKey } from "../../config";
+import AppLoader from "../../Helper/AppIndicator";
 //import {initPushHandler} from '../../PushNotification/NotificationConfig';
-import {ScrollView} from 'react-native-gesture-handler';
-import DepotDropdownPopup from '../../comonent/DepotDropdownPopup/DepotDropdownPopup';
-import Dashboard from './Dashboard';
-import {useIsFocused} from '@react-navigation/native';
+import { ScrollView } from "react-native-gesture-handler";
+import DepotDropdownPopup from "../../comonent/DepotDropdownPopup/DepotDropdownPopup";
+import Dashboard from "./Dashboard";
+import { useIsFocused } from "@react-navigation/native";
 import Permissions, {
   PERMISSIONS,
   RESULTS,
   check,
   request,
-} from 'react-native-permissions';
+} from "react-native-permissions";
 
-const TODAY_DATE = moment().format('YYYY-MM-DD');
+const TODAY_DATE = moment().format("YYYY-MM-DD");
 
-const Home = ({navigation, route}) => {
+const Home = ({ navigation, route }) => {
   let params = route.params;
   // AppState.addEventListener('blur',()=> {})
   const [userDetails, setUserDetails] = useState({});
   const [roleBasedGrid, setRoleBasedGrid] = useState();
-  const [roleBasedName, setRoleBasedName] = useState('');
-  const [checkInType, setcheckInType] = useState('');
+  const [roleBasedName, setRoleBasedName] = useState("");
+  const [checkInType, setcheckInType] = useState("");
   const [isPermissionGranted, setIsPermissionGranted] = useState(false);
   const [depotItem, setDepotItem] = useState({});
   const [regionWiseParcelList, setregionWiseParcelList] = useState([]);
   const [regionWiseDepotList, setregionWiseDepotList] = useState([]);
   const [showDepotPopup, setshowDepotPopup] = useState(false);
-  const [vendorDashboardData, setvendorDashboardData] = useState('');
-  const [attendenceRadius, setattendenceRadius] = useState('');
+  const [vendorDashboardData, setvendorDashboardData] = useState("");
+  const [attendenceRadius, setattendenceRadius] = useState("");
   // const [checkIn, setCheckIn] = useState(
   //   moment().format('DD-MM-YYYY') === params?.date ? params?.checkInValue : '',
   // );
-  const [checkIn, setCheckIn] = useState('');
+  const [checkIn, setCheckIn] = useState("");
   // const [checkOut, setCheckOut] = useState(
   //   moment().format('DD-MM-YYYY') === params?.date ? params?.checkOutValue : '',
   // );
-  const [checkOut, setCheckOut] = useState('');
+  const [checkOut, setCheckOut] = useState("");
   const [checkType, setCheckType] = useState(1); // 1 --> checkin, 2 --> checkout
   const [loading, setLoading] = useState(false);
 
@@ -80,15 +80,15 @@ const Home = ({navigation, route}) => {
   }, []);
 
   const getRigion = async () => {
-    const token = await AsyncStorage.getItem('InExToken');
-    const userId = await AsyncStorage.getItem('InExUserId');
+    const token = await AsyncStorage.getItem("InExToken");
+    const userId = await AsyncStorage.getItem("InExUserId");
     const response = await auth.getRigionList(userId, token);
 
     if (response?.status != 200) {
       //alert(response?.problem);
     } else {
       if (response?.data?.data?.length > 0) {
-        let findRegionId = response?.data?.data?.map(item => {
+        let findRegionId = response?.data?.data?.map((item) => {
           return item?.id;
         });
 
@@ -96,10 +96,10 @@ const Home = ({navigation, route}) => {
         getRigionsParcelList(findRegionId, response?.data?.data);
       } else {
         Alert.alert(
-          'Oops!',
-          'Region list not found.',
-          [{text: 'OK', onPress: async () => {}}],
-          {cancelable: false},
+          "Oops!",
+          "Region list not found.",
+          [{ text: "OK", onPress: async () => {} }],
+          { cancelable: false }
         );
       }
     }
@@ -108,20 +108,20 @@ const Home = ({navigation, route}) => {
   const getRigionsDepotList = async (region, responseData) => {
     let sendingData = {
       regions: region,
-      type: 'depot',
+      type: "depot",
       table: responseData[0]?.table,
     };
 
-    const token = await AsyncStorage.getItem('InExToken');
+    const token = await AsyncStorage.getItem("InExToken");
     //const userId = await AsyncStorage.getItem('InExUserId');
     const response = await auth.regionWiseParcelAndDepot(sendingData, token);
 
     if (response?.status != 200) {
       Alert.alert(
-        'Oops!',
+        "Oops!",
         response?.problem,
-        [{text: 'OK', onPress: async () => {}}],
-        {cancelable: false},
+        [{ text: "OK", onPress: async () => {} }],
+        { cancelable: false }
       );
     } else {
       setregionWiseDepotList(response?.data);
@@ -131,20 +131,20 @@ const Home = ({navigation, route}) => {
     let sendingData = {
       regions: region,
       //regions: [1],
-      type: 'parcel',
+      type: "parcel",
       table: responseData[0]?.table,
     };
 
-    const token = await AsyncStorage.getItem('InExToken');
+    const token = await AsyncStorage.getItem("InExToken");
     //const userId = await AsyncStorage.getItem('InExUserId');
     const response = await auth.regionWiseParcelAndDepot(sendingData, token);
 
     if (response?.status != 200) {
       Alert.alert(
-        'Oops!',
+        "Oops!",
         response?.problem,
-        [{text: 'OK', onPress: async () => {}}],
-        {cancelable: false},
+        [{ text: "OK", onPress: async () => {} }],
+        { cancelable: false }
       );
     } else {
       setregionWiseParcelList(response?.data);
@@ -152,18 +152,18 @@ const Home = ({navigation, route}) => {
   };
 
   const requestPermission = async () => {
-    if (Platform.OS == 'android') {
+    if (Platform.OS == "android") {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
         {
-          title: 'India Express App Camera Permission',
+          title: "India Express App Camera Permission",
           message:
-            'India Express App needs access to your camera ' +
-            'so you can scan coupons and take pictures',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
+            "India Express App needs access to your camera " +
+            "so you can scan coupons and take pictures",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK",
+        }
       );
     } else {
       const granted = await request(
@@ -172,9 +172,9 @@ const Home = ({navigation, route}) => {
           ios: PERMISSIONS.IOS.CAMERA,
         }),
         {
-          title: 'Indian Express',
-          message: 'Indian Express want to access your camera permission.',
-        },
+          title: "Indian Express",
+          message: "Indian Express want to access your camera permission.",
+        }
       );
     }
   };
@@ -195,48 +195,48 @@ const Home = ({navigation, route}) => {
   const fetchUserAttandnce = async () => {
     //InExCheckIn
     setLoading(true);
-    const token = await AsyncStorage.getItem('InExToken');
-    const userId = await AsyncStorage.getItem('InExUserId');
-    const InExCheckInData = await AsyncStorage.getItem('InExCheckIn');
+    const token = await AsyncStorage.getItem("InExToken");
+    const userId = await AsyncStorage.getItem("InExUserId");
+    const InExCheckInData = await AsyncStorage.getItem("InExCheckIn");
 
     auth
       .getAttendance(userId, token)
-      .then(response => {
+      .then((response) => {
         const list = response?.data?.data;
-        const tempArr = list.filter(ele => ele?.user_id == userId); // filter particular user
+        const tempArr = list.filter((ele) => ele?.user_id == userId); // filter particular user
         const attendanceList = tempArr.filter(
-          ele =>
-            moment(ele?.check_in_time_ist).format('YYYY-MM-DD') ==
-            moment().format('YYYY-MM-DD'),
+          (ele) =>
+            moment(ele?.check_in_time_ist).format("YYYY-MM-DD") ==
+            moment().format("YYYY-MM-DD")
         ); // filter today date
 
         setLoading(false);
         if (attendanceList && attendanceList.length > 0) {
           const tempData = attendanceList.pop();
           if (tempData?.check_in_time_ist) {
-            setCheckIn(moment(tempData?.check_in_time_ist).format('HH:mm A'));
+            setCheckIn(moment(tempData?.check_in_time_ist).format("HH:mm A"));
 
             let parseInExCheckInData = JSON.parse(InExCheckInData);
 
             setcheckInType(
               parseInExCheckInData?.checkInType
                 ? parseInExCheckInData?.checkInType
-                : '',
+                : ""
             );
           } else {
-            setCheckIn('');
+            setCheckIn("");
           }
           if (tempData?.check_out_time_ist) {
-            setCheckOut(moment(tempData?.check_out_time_ist).format('HH:mm A'));
+            setCheckOut(moment(tempData?.check_out_time_ist).format("HH:mm A"));
           } else {
-            setCheckOut('');
+            setCheckOut("");
           }
         } else {
-          setCheckIn('');
-          setCheckOut('');
+          setCheckIn("");
+          setCheckOut("");
         }
       })
-      .catch(err => {
+      .catch((err) => {
         setLoading(false);
         // alert('Something went wrong!');
       });
@@ -244,10 +244,10 @@ const Home = ({navigation, route}) => {
 
   const getLocation = async (typeId, selectedItem = null) => {
     setLoading(true);
-    const token = await AsyncStorage.getItem('InExToken');
-    const userId = await AsyncStorage.getItem('InExUserId');
+    const token = await AsyncStorage.getItem("InExToken");
+    const userId = await AsyncStorage.getItem("InExUserId");
     Geolocation.getCurrentPosition(
-      position => {
+      (position) => {
         let userCurretLocationPonts = {
           lat: position?.coords?.latitude,
           lng: position?.coords?.longitude,
@@ -272,8 +272,8 @@ const Home = ({navigation, route}) => {
         let distanceInMeter = distanceInKM * 1000;
 
         let pos = position;
-        let dt = '';
-        const dataObj = {user_id: userId};
+        let dt = "";
+        const dataObj = { user_id: userId };
         if (typeId == 2) {
           // dataObj.check_out_latitude =
           //   response?.results[0]?.formatted_address;
@@ -284,64 +284,64 @@ const Home = ({navigation, route}) => {
           dataObj.address = null;
           dataObj.check_in_type = null;
           dataObj.depot_id = null;
-          dt = moment(pos?.timestamp).format('HH:mm A');
+          dt = moment(pos?.timestamp).format("HH:mm A");
 
           auth
             .checkInCheckOut(dataObj, token)
-            .then(response => {
+            .then((response) => {
               setLoading(false);
               fetchUserAttandnce();
               if (response?.status != 200) {
                 //apiFailureAlert('outstandingAmountApi');
-                Alert.alert('Error', response?.data?.message, [
-                  {text: 'OK', onPress: () => {}},
+                Alert.alert("Error", response?.data?.message, [
+                  { text: "OK", onPress: () => {} },
                 ]);
               } else {
-                let date = moment().format('DD-MM-YYYY');
+                let date = moment().format("DD-MM-YYYY");
                 setCheckOut(dt);
 
                 if (typeId == 1) {
                   AsyncStorage.setItem(
-                    'InExCheckIn',
-                    JSON.stringify({date: date, checkInValue: dt}),
+                    "InExCheckIn",
+                    JSON.stringify({ date: date, checkInValue: dt })
                   );
                 } else {
                   AsyncStorage.setItem(
-                    'InExCheckOut',
-                    JSON.stringify({date: date, checkOutValue: dt}),
+                    "InExCheckOut",
+                    JSON.stringify({ date: date, checkOutValue: dt })
                   );
                 }
               }
             })
-            .catch(err => {
+            .catch((err) => {
               setLoading(false);
-              alert('Something went wrong!');
+              alert("Something went wrong!");
             });
         } else {
           if (distanceInMeter > parseInt(attendenceRadius[0]?.radius)) {
             setLoading(false);
             Alert.alert(
-              'Location Alert',
-              'You are not in your designated address.',
-              [{text: 'OK', onPress: () => {}}],
+              "Location Alert",
+              "You are not in your designated address.",
+              [{ text: "OK", onPress: () => {} }]
             );
           } else {
             dataObj.check_in_latitude = pos?.coords?.latitude;
             dataObj.check_in_longitude = pos?.coords?.longitude;
-            dt = moment(pos?.timestamp).format('HH:mm A');
+            dt = moment(pos?.timestamp).format("HH:mm A");
 
-            const format = 'HH:mm:ss';
-            let checkInType = '';
+            const format = "HH:mm:ss";
+            let checkInType = "";
 
             var CurrentDate = moment().format(format);
             const time = moment(CurrentDate, format);
-            const beforeTime = moment('00:00:00', format);
-            const afterTime = moment('05:31:00', format);
+            const beforeTime = moment("00:00:00", format);
+            const afterTime = moment("05:31:00", format);
 
             if (time.isBetween(beforeTime, afterTime)) {
-              checkInType = 'Depot Visit';
+              checkInType = "Depot Visit";
             } else {
-              checkInType = 'Field Visit';
+              checkInType = "Field Visit";
             }
 
             dataObj.check_in_type = checkInType;
@@ -349,51 +349,51 @@ const Home = ({navigation, route}) => {
 
             auth
               .checkInCheckOut(dataObj, token)
-              .then(response => {
+              .then((response) => {
                 fetchUserAttandnce();
                 setLoading(false);
 
                 if (response?.status != 200) {
                   //apiFailureAlert('outstandingAmountApi');
-                  Alert.alert('Error', response?.data?.message, [
-                    {text: 'OK', onPress: () => {}},
+                  Alert.alert("Error", response?.data?.message, [
+                    { text: "OK", onPress: () => {} },
                   ]);
                 } else {
-                  let date = moment().format('DD-MM-YYYY');
+                  let date = moment().format("DD-MM-YYYY");
                   setCheckIn(dt);
 
                   if (typeId == 1) {
                     fetchUserAttandnce();
                     AsyncStorage.setItem(
-                      'InExCheckIn',
+                      "InExCheckIn",
                       JSON.stringify({
                         date: date,
                         checkInValue: dt,
                         checkInType: checkInType,
-                      }),
+                      })
                     );
                   } else {
                     AsyncStorage.setItem(
-                      'InExCheckOut',
-                      JSON.stringify({date: date, checkOutValue: dt}),
+                      "InExCheckOut",
+                      JSON.stringify({ date: date, checkOutValue: dt })
                     );
                   }
                 }
               })
-              .catch(err => {
+              .catch((err) => {
                 setLoading(false);
                 //alert('Something went wrong!  ');
               });
           }
         }
       },
-      error => {
+      (error) => {
         setLoading(false);
-        Alert.alert('Location Alert', error?.message, [
-          {text: 'OK', onPress: () => {}},
+        Alert.alert("Location Alert", error?.message, [
+          { text: "OK", onPress: () => {} },
         ]);
       },
-      {enableHighAccuracy: true, timeout: 60000},
+      { enableHighAccuracy: true, timeout: 60000 }
     );
   };
 
@@ -408,9 +408,9 @@ const Home = ({navigation, route}) => {
     //   return;
     // }
     try {
-      if (Platform.OS == 'android') {
+      if (Platform.OS == "android") {
         const hasLocationPermission = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
         );
 
         if (hasLocationPermission === PermissionsAndroid.RESULTS.GRANTED) {
@@ -422,20 +422,20 @@ const Home = ({navigation, route}) => {
           setIsPermissionGranted(false);
 
           Alert.alert(
-            'Location Alert',
-            'Please provide location permission from app settings in order to check-in/check-out.',
+            "Location Alert",
+            "Please provide location permission from app settings in order to check-in/check-out.",
             [
               {
-                text: 'OK',
+                text: "OK",
                 onPress: () => {
-                  if (Platform.OS === 'ios') {
-                    Linking.openURL('app-settings:');
+                  if (Platform.OS === "ios") {
+                    Linking.openURL("app-settings:");
                   } else {
                     Linking.openSettings();
                   }
                 },
               },
-            ],
+            ]
           );
         } else {
           setIsPermissionGranted(false);
@@ -447,31 +447,31 @@ const Home = ({navigation, route}) => {
             ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
           }),
           {
-            title: 'Indian Express',
+            title: "Indian Express",
             message:
-              'Indian Express want to access location data to enable identification of nearby locations.',
-          },
+              "Indian Express want to access location data to enable identification of nearby locations.",
+          }
         );
 
-        if (granted == 'granted') {
+        if (granted == "granted") {
           getLocation(typeId, selectedItem);
           setIsPermissionGranted(true);
         } else {
           Alert.alert(
-            'Location Alert',
-            'Please provide location permission from app settings in order to check-in/check-out.',
+            "Location Alert",
+            "Please provide location permission from app settings in order to check-in/check-out.",
             [
               {
-                text: 'OK',
+                text: "OK",
                 onPress: () => {
-                  if (Platform.OS === 'ios') {
-                    Linking.openURL('app-settings:');
+                  if (Platform.OS === "ios") {
+                    Linking.openURL("app-settings:");
                   } else {
                     Linking.openSettings();
                   }
                 },
               },
-            ],
+            ]
           );
         }
       }
@@ -480,28 +480,28 @@ const Home = ({navigation, route}) => {
 
   const logoutAction = () => {
     Alert.alert(
-      'Alert!',
-      'Are you sure you want to Log out?',
+      "Alert!",
+      "Are you sure you want to Log out?",
       [
         {
-          text: 'Yes',
+          text: "Yes",
           onPress: async () => {
             //logOutApiCall();
 
-            await AsyncStorage.removeItem('InExToken');
-            await AsyncStorage.removeItem('InExUserId');
-            await AsyncStorage.removeItem('InExUserDetails');
-            NavigationService.reset(navigation, 'Login');
+            await AsyncStorage.removeItem("InExToken");
+            await AsyncStorage.removeItem("InExUserId");
+            await AsyncStorage.removeItem("InExUserDetails");
+            NavigationService.reset(navigation, "Login");
           },
         },
-        {text: 'No', onPress: () => {}},
+        { text: "No", onPress: () => {} },
       ],
-      {cancelable: true},
+      { cancelable: true }
     );
   };
 
   const getUserDetails = async () => {
-    const userData = await AsyncStorage.getItem('InExUserDetails');
+    const userData = await AsyncStorage.getItem("InExUserDetails");
 
     setUserDetails(JSON.parse(userData));
 
@@ -509,56 +509,56 @@ const Home = ({navigation, route}) => {
     getAttendenceRadius(parseUserData);
   };
 
-  const getAttendenceRadius = async loginUserDetail => {
+  const getAttendenceRadius = async (loginUserDetail) => {
     if (
-      loginUserDetail?.role == 'Depot Salesman' ||
-      loginUserDetail?.role == 'Parcel Vendor'
+      loginUserDetail?.role == "Depot Salesman" ||
+      loginUserDetail?.role == "Parcel Vendor"
     ) {
     } else {
-      const token = await AsyncStorage.getItem('InExToken');
+      const token = await AsyncStorage.getItem("InExToken");
       const response = await auth.getAttendenceRadius(token);
 
       if (response?.data?.code == 200 || response?.data?.code == 201) {
         setattendenceRadius(response?.data?.data);
       } else {
-        setattendenceRadius('');
+        setattendenceRadius("");
       }
     }
   };
 
   const disabledCheckIn = () => {
-    if (checkIn == '') {
+    if (checkIn == "") {
       return false;
     } else return true;
   };
 
   const disabledCheckOut = () => {
-    if (checkIn == '' || checkOut != '') {
+    if (checkIn == "" || checkOut != "") {
       return true;
     } else return false;
   };
 
   const tabLabel = () => {
     if (
-      userDetails?.role === 'Depot Salesman' ||
-      userDetails?.role === 'Parcel Vendor'
+      userDetails?.role === "Depot Salesman" ||
+      userDetails?.role === "Parcel Vendor"
     ) {
       setRoleBasedGrid(1); // unsold tile
       // setRoleBasedName('Unsold/ Return');
       setRoleBasedName("Daily Sale's Report");
     }
-    if (userDetails?.role === 'Collection Executive') {
+    if (userDetails?.role === "Collection Executive") {
       setRoleBasedGrid(2); //collection tile
-      setRoleBasedName('Collection');
+      setRoleBasedName("Collection");
     }
-    if (userDetails?.role === 'Circulation Executive') {
+    if (userDetails?.role === "Circulation Executive") {
       setRoleBasedGrid(3); // approve tile
       // setRoleBasedName('Verify Unsold/Return');
       setRoleBasedName("Daily Sale's Report");
     }
     if (
-      userDetails?.role === 'Regional Manager' ||
-      userDetails?.role === 'City Head'
+      userDetails?.role === "Regional Manager" ||
+      userDetails?.role === "City Head"
     ) {
       setRoleBasedGrid(4); // approve tile
       // setRoleBasedName('Verify Unsold/Return');
@@ -568,48 +568,49 @@ const Home = ({navigation, route}) => {
 
   const deleteAcoount = () => {
     Alert.alert(
-      'Alert!',
-      'Are you sure you want to Delete Account?',
+      "Alert!",
+      "Are you sure you want to Delete Account?",
       [
         {
-          text: 'Yes',
+          text: "Yes",
           onPress: () => {
             deleteApiCall();
           },
         },
-        {text: 'No', onPress: () => {}},
+        { text: "No", onPress: () => {} },
       ],
-      {cancelable: true},
+      { cancelable: true }
     );
   };
 
   const deleteApiCall = async () => {
-    const token = await AsyncStorage.getItem('InExToken');
-    const userId = await AsyncStorage.getItem('InExUserId');
+    const token = await AsyncStorage.getItem("InExToken");
+    const userId = await AsyncStorage.getItem("InExUserId");
     auth
       .deleteAccount(userId, token)
-      .then(async response => {
-        console.log('deleteApiCall', response);
+      .then(async (response) => {
+        console.log("deleteApiCall", response);
         if (response?.status == 200) {
-          await AsyncStorage.removeItem('InExToken');
-          await AsyncStorage.removeItem('InExUserId');
-          await AsyncStorage.removeItem('InExUserDetails');
-          NavigationService.reset(navigation, 'Login');
+          await AsyncStorage.removeItem("InExToken");
+          await AsyncStorage.removeItem("InExUserId");
+          await AsyncStorage.removeItem("InExUserDetails");
+          NavigationService.reset(navigation, "Login");
         } else {
-          alert('Something went wrong!');
+          alert("Something went wrong!");
         }
       })
-      .catch(err => {
-        console.log('deleteApiCall', err);
-        alert('Something went wrong!');
+      .catch((err) => {
+        console.log("deleteApiCall", err);
+        alert("Something went wrong!");
       });
   };
 
   return (
     <ScrollView
-      style={{flex: 1, marginBottom: 20}}
+      style={{ flex: 1, marginBottom: 20 }}
       showsHorizontalScrollIndicator={false}
-      showsVerticalScrollIndicator={false}>
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.container}>
         {showDepotPopup ? (
           <DepotDropdownPopup
@@ -620,7 +621,7 @@ const Home = ({navigation, route}) => {
               setshowDepotPopup(false);
             }}
             depotItem={depotItem}
-            itemHandler={item => {
+            itemHandler={(item) => {
               if (attendenceRadius?.length > 0) {
                 if (item?.check_in_longitude && item?.check_in_latitude) {
                   setDepotItem(item);
@@ -631,37 +632,37 @@ const Home = ({navigation, route}) => {
                   }, 1000);
                 } else {
                   Alert.alert(
-                    'Oops!',
-                    'Address not found',
-                    [{text: 'OK', onPress: async () => {}}],
-                    {cancelable: false},
+                    "Oops!",
+                    "Address not found",
+                    [{ text: "OK", onPress: async () => {} }],
+                    { cancelable: false }
                   );
                 }
               } else {
                 Alert.alert(
-                  'Oops!',
-                  'Attendence radius not defined.',
-                  [{text: 'OK', onPress: async () => {}}],
-                  {cancelable: false},
+                  "Oops!",
+                  "Attendence radius not defined.",
+                  [{ text: "OK", onPress: async () => {} }],
+                  { cancelable: false }
                 );
               }
             }}
           />
         ) : null}
-        <View style={{paddingHorizontal: 10}}>
+        <View style={{ paddingHorizontal: 10 }}>
           <Image source={images.logo} style={styles.logo} />
         </View>
         <View style={styles.deshboard}>
-          <View style={{paddingHorizontal: 20}}>
+          <View style={{ paddingHorizontal: 20 }}>
             <Text style={styles.profilename}>{userDetails?.name}</Text>
             <Text style={styles.place}>{userDetails.role}</Text>
             <Text style={styles.empids}>
-              {userDetails?.user_type == 'external'
-                ? 'BP Code'
-                : 'Employee Code'}{' '}
+              {userDetails?.user_type == "external"
+                ? "BP Code"
+                : "Employee Code"}{" "}
               : {userDetails.loginId}
             </Text>
-            {roleBasedGrid == '1' ? null : (
+            {roleBasedGrid == "1" ? null : (
               <Text numberOfLines={3} style={styles.empids}>
                 Mail : {userDetails.email}
               </Text>
@@ -676,29 +677,31 @@ const Home = ({navigation, route}) => {
         </View>
         <View
           style={{
-            backgroundColor: 'white',
+            backgroundColor: "white",
             marginHorizontal: 10,
             paddingBottom: 10,
             paddingHorizontal: 10,
             paddingTop: 10,
-          }}>
+          }}
+        >
           {roleBasedGrid == 1 ? null : (
             <>
               <Text style={styles.attendancepart}>Attendance</Text>
 
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                   marginTop: 10,
                   // alignItems: 'center',
-                }}>
-                <View style={{width: '48%'}}>
+                }}
+              >
+                <View style={{ width: "48%" }}>
                   <Pressable
                     disabled={disabledCheckIn()}
                     style={[
                       styles.maincheckin,
-                      {opacity: disabledCheckIn() ? 0.4 : 1},
+                      { opacity: disabledCheckIn() ? 0.4 : 1 },
                     ]}
                     // onPress={() => {
                     //   setCheckType(1);
@@ -711,7 +714,8 @@ const Home = ({navigation, route}) => {
 
                     onPress={() => {
                       setshowDepotPopup(true);
-                    }}>
+                    }}
+                  >
                     <Image
                       source={
                         disabledCheckIn() ? images.checkin : images.checkout
@@ -719,7 +723,7 @@ const Home = ({navigation, route}) => {
                     />
                     <View>
                       <Text style={styles.checkintime}>
-                        Check-in {'\n'}
+                        Check-in {"\n"}
                         {checkIn}
                       </Text>
                       {checkInType ? (
@@ -732,13 +736,14 @@ const Home = ({navigation, route}) => {
                 </View>
                 <View
                   style={{
-                    width: '48%',
+                    width: "48%",
                     //backgroundColor: 'red',
-                  }}>
+                  }}
+                >
                   <Pressable
                     style={[
                       styles.maincheckin,
-                      {opacity: disabledCheckOut() ? 0.4 : 1},
+                      { opacity: disabledCheckOut() ? 0.4 : 1 },
                     ]}
                     disabled={disabledCheckOut()}
                     onPress={() => {
@@ -748,12 +753,13 @@ const Home = ({navigation, route}) => {
                       } else {
                         checkLocationPermission(2);
                       }
-                    }}>
+                    }}
+                  >
                     <Image
                       source={checkOut ? images.checkin : images.checkout}
                     />
                     <Text style={styles.checkout}>
-                      Check-Out {'\n'}
+                      Check-Out {"\n"}
                       {checkOut}
                     </Text>
                   </Pressable>
@@ -764,21 +770,22 @@ const Home = ({navigation, route}) => {
         </View>
         <AppLoader visible={loading} />
 
-        <View style={{marginTop: 20}}>
+        <View style={{ marginTop: 20 }}>
           {roleBasedGrid == 1 ? (
             <>
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItem: 'center',
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItem: "center",
                   paddingHorizontal: 20,
-                }}>
+                }}
+              >
                 <Card
                   image={images.return}
                   text="Daily Sale's Report"
                   handleCardClick={() => {
-                    navigation.navigate('DailySalesDashboard', {
+                    navigation.navigate("DailySalesDashboard", {
                       roleBasedGrid: roleBasedGrid,
                     });
                   }}
@@ -788,29 +795,30 @@ const Home = ({navigation, route}) => {
                   text="Collection"
                   //handleCardClick={() => navigation.navigate('Collection')}
                   handleCardClick={() => {
-                    navigation.navigate('CollectionDashboard');
+                    navigation.navigate("CollectionDashboard");
                   }}
                 />
               </View>
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItem: 'center',
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItem: "center",
                   paddingHorizontal: 20,
                   marginTop: 20,
-                }}>
+                }}
+              >
                 <Card
                   image={images.profileIcon}
                   text="Profile"
-                  handleCardClick={() => navigation.push('Profile')}
+                  handleCardClick={() => navigation.push("Profile")}
                 />
                 <Card
                   image={images.file}
                   text="Print Order"
                   fullWidth={true}
                   handleCardClick={() => {
-                    navigation.navigate('SelectionOfPrintOrder');
+                    navigation.navigate("SelectionOfPrintOrder");
                     // if (roleBasedGrid == 3 || roleBasedGrid == 4) {
                     //   navigation.navigate('PrintOrderDashboard');
                     // } else {
@@ -822,11 +830,12 @@ const Home = ({navigation, route}) => {
               <View
                 style={{
                   marginTop: 20,
-                  justifyContent: 'center',
-                  alignItem: 'center',
-                  width: '100%',
-                  flexDirection: 'row',
-                }}>
+                  justifyContent: "center",
+                  alignItem: "center",
+                  width: "100%",
+                  flexDirection: "row",
+                }}
+              >
                 <Card
                   image={images.logoutIcon}
                   text="Log out"
@@ -845,34 +854,36 @@ const Home = ({navigation, route}) => {
             <>
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItem: 'center',
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItem: "center",
                   paddingHorizontal: 20,
-                }}>
+                }}
+              >
                 <Card
                   image={images.file}
                   text="Collection"
                   //handleCardClick={() => navigation.navigate('Collection')}
                   handleCardClick={() => {
-                    navigation.navigate('CollectionDashboard');
+                    navigation.navigate("CollectionDashboard");
                   }}
                 />
                 <Card
                   image={images.profileIcon}
                   text="Profile"
-                  handleCardClick={() => navigation.push('Profile')}
+                  handleCardClick={() => navigation.push("Profile")}
                 />
               </View>
               <View
                 style={{
                   marginTop: 20,
-                  justifyContent: 'center',
-                  alignItem: 'center',
-                  width: '100%',
-                  flexDirection: 'row',
+                  justifyContent: "center",
+                  alignItem: "center",
+                  width: "100%",
+                  flexDirection: "row",
                   paddingHorizontal: 20,
-                }}>
+                }}
+              >
                 <Card
                   image={images.logoutIcon}
                   text="Log out"
@@ -891,16 +902,17 @@ const Home = ({navigation, route}) => {
             <>
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItem: 'center',
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItem: "center",
                   paddingHorizontal: 20,
-                }}>
+                }}
+              >
                 <Card
                   image={images.return}
                   text={roleBasedName}
                   handleCardClick={() => {
-                    navigation.navigate('DailySalesDashboard', {
+                    navigation.navigate("DailySalesDashboard", {
                       titleName: roleBasedName,
                       roleBasedGrid: roleBasedGrid,
                     });
@@ -911,29 +923,30 @@ const Home = ({navigation, route}) => {
                   text="Collection"
                   //handleCardClick={() => navigation.navigate('Collection')}
                   handleCardClick={() => {
-                    navigation.navigate('CollectionDashboard');
+                    navigation.navigate("CollectionDashboard");
                   }}
                 />
               </View>
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItem: 'center',
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItem: "center",
                   paddingHorizontal: 20,
                   marginTop: 20,
-                }}>
+                }}
+              >
                 <Card
                   image={images.profileIcon}
                   text="Profile"
-                  handleCardClick={() => navigation.push('Profile')}
+                  handleCardClick={() => navigation.push("Profile")}
                 />
                 <Card
                   image={images.file}
                   text="Print Order"
                   fullWidth={true}
                   handleCardClick={() => {
-                    navigation.navigate('SelectionOfPrintOrder');
+                    navigation.navigate("SelectionOfPrintOrder");
                     // if (roleBasedGrid == 3 || roleBasedGrid == 4) {
                     //   navigation.navigate('PrintOrderDashboard');
                     // } else {
@@ -945,12 +958,13 @@ const Home = ({navigation, route}) => {
               <View
                 style={{
                   marginTop: 20,
-                  justifyContent: 'center',
-                  alignItem: 'center',
-                  width: '100%',
-                  flexDirection: 'row',
+                  justifyContent: "center",
+                  alignItem: "center",
+                  width: "100%",
+                  flexDirection: "row",
                   paddingHorizontal: 20,
-                }}>
+                }}
+              >
                 <Card
                   image={images.logoutIcon}
                   text="Log out"
@@ -970,16 +984,17 @@ const Home = ({navigation, route}) => {
             <>
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItem: 'center',
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItem: "center",
                   paddingHorizontal: 20,
-                }}>
+                }}
+              >
                 <Card
                   image={images.return}
                   text={roleBasedName}
                   handleCardClick={() => {
-                    navigation.navigate('DailySalesDashboard', {
+                    navigation.navigate("DailySalesDashboard", {
                       roleBasedGrid: roleBasedGrid,
                     });
                   }}
@@ -991,29 +1006,30 @@ const Home = ({navigation, route}) => {
                     // navigation.navigate('CollectionApprovalDashboard', {
                     //   roleBasedGrid: 2,
                     // })
-                    navigation.navigate('CollectionDashboard')
+                    navigation.navigate("CollectionDashboard")
                   }
                 />
               </View>
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItem: 'center',
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItem: "center",
                   paddingHorizontal: 20,
                   marginTop: 20,
-                }}>
+                }}
+              >
                 <Card
                   image={images.profileIcon}
                   text="Profile"
-                  handleCardClick={() => navigation.push('Profile')}
+                  handleCardClick={() => navigation.push("Profile")}
                 />
                 <Card
                   image={images.file}
                   text="Print Order"
                   fullWidth={true}
                   handleCardClick={() => {
-                    navigation.navigate('SelectionOfPrintOrder');
+                    navigation.navigate("SelectionOfPrintOrder");
                     // if (roleBasedGrid == 3 || roleBasedGrid == 4) {
                     //   navigation.navigate('PrintOrderDashboard');
                     // } else {
@@ -1025,12 +1041,13 @@ const Home = ({navigation, route}) => {
               <View
                 style={{
                   marginTop: 20,
-                  justifyContent: 'center',
-                  alignItem: 'center',
-                  width: '100%',
-                  flexDirection: 'row',
+                  justifyContent: "center",
+                  alignItem: "center",
+                  width: "100%",
+                  flexDirection: "row",
                   paddingHorizontal: 20,
-                }}>
+                }}
+              >
                 <Card
                   image={images.logoutIcon}
                   text="Log out"
@@ -1052,7 +1069,7 @@ const Home = ({navigation, route}) => {
   );
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   // ccDashboard: state.CCReducer.ccDashboard,
   // ccHotlistLoading: state.CCHotlistReducer.ccHotlistLoading,
   // ccHotlist: state.CCHotlistReducer.ccHotlist,

@@ -253,7 +253,7 @@ export default function UnsoldReturnApprovalDashboard({ navigation, route }) {
       isChart: true,
     };
     const response = await auth.unsoldReturnApprovalList(dataObj, token);
-    console.log("getRecords", response);
+    console.log("getRecords ssssss", response);
     setloading(false);
 
     if (response?.status != 200) {
@@ -338,6 +338,8 @@ export default function UnsoldReturnApprovalDashboard({ navigation, route }) {
     let dataObj = {
       userId: userId,
       isForMobile: true,
+      //publication_id: publicationItem ? publicationItem.id : null,
+      publication_id: request?.isFilter ? publicationItem.id : null,
     };
     if (isFilterApply) {
       dataObj = { ...dataObj, ...request };
@@ -1007,6 +1009,7 @@ export default function UnsoldReturnApprovalDashboard({ navigation, route }) {
           parcelView ? (
             <>
               <FlatList
+                style={{ marginBottom: 90 }}
                 data={parcelList}
                 //ListHeaderComponent={listHeaderView()}
                 renderItem={(item) => unsoldReturnRenderItemView(item)}
@@ -1029,6 +1032,7 @@ export default function UnsoldReturnApprovalDashboard({ navigation, route }) {
           ) : (
             <>
               <FlatList
+                style={{ marginBottom: 90 }}
                 data={vendorList}
                 ListHeaderComponent={listHeaderView()}
                 renderItem={(item) => unsoldReturnRenderItemView(item)}
@@ -1055,6 +1059,7 @@ export default function UnsoldReturnApprovalDashboard({ navigation, route }) {
             {parcelView ? (
               <>
                 <FlatList
+                  style={{ marginBottom: 90 }}
                   data={parcelList}
                   //ListHeaderComponent={listHeaderView()}
                   renderItem={(item) => unsoldReturnRenderItemView(item)}
@@ -1077,6 +1082,7 @@ export default function UnsoldReturnApprovalDashboard({ navigation, route }) {
             ) : (
               <>
                 <FlatList
+                  style={{ marginBottom: 90 }}
                   data={vendorList}
                   //ListHeaderComponent={listHeaderView()}
                   renderItem={(item) => unsoldReturnRenderItemView(item)}
@@ -1101,6 +1107,7 @@ export default function UnsoldReturnApprovalDashboard({ navigation, route }) {
         ) : (
           <>
             <FlatList
+              style={{ marginBottom: 90 }}
               data={recordsArr}
               ListHeaderComponent={listHeaderView()}
               renderItem={(item) => unsoldReturnRenderItemView(item)}
