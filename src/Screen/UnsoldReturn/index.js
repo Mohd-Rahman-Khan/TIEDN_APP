@@ -63,6 +63,8 @@ const UnsoldRetun = ({ navigation }) => {
   const [regionWiseParcelList, setregionWiseParcelList] = useState([]);
   const [regionWiseDepotList, setregionWiseDepotList] = useState([]);
   const [showSubmitButton, setshowSubmitButton] = useState(true);
+  const [circulationExecList, setCirculationExecList] = useState([]);
+  const [selectedCirculationExec, setselectedCirculationExec] = useState("");
 
   useEffect(() => {
     depotApi();
@@ -73,7 +75,31 @@ const UnsoldRetun = ({ navigation }) => {
   useEffect(() => {
     depotApi();
     publicationApi();
-  }, [recallApi]);
+  }, [recallApi, selectedCirculationExec]);
+
+  const getCirculationExecListForRM = async () => {
+    const userData1 = await AsyncStorage.getItem("InExUserDetails");
+    const userData = JSON.parse(userData1);
+    const token = await AsyncStorage.getItem("InExToken");
+    const response = await auth.getCirculationExecListForRM(
+      userData?.loginId,
+      token
+    );
+
+    // console.log("response", response);
+    // console.log("response", userData?.loginId);
+
+    if (response?.status == 200) {
+      if (response?.data?.length > 0) {
+        setCirculationExecList(response?.data);
+        setselectedCirculationExec(response?.data[0]);
+      } else {
+        setCirculationExecList([]);
+      }
+    } else {
+      setCirculationExecList([]);
+    }
+  };
 
   const getUserDetails = async () => {
     const userData1 = await AsyncStorage.getItem("InExUserDetails");
@@ -84,6 +110,10 @@ const UnsoldRetun = ({ navigation }) => {
       userData?.role == "Depot Salesman"
     ) {
       setIsPvDsm(true);
+    }
+
+    if (userData?.role == "Regional Manager") {
+      getCirculationExecListForRM();
     }
   };
 
@@ -103,9 +133,18 @@ const UnsoldRetun = ({ navigation }) => {
   }, [supplyVal, unsoldVal, returnVal]);
 
   const getRigion = async (publicationId) => {
+    //console.log("userIdData", selectedCirculationExec);
     const token = await AsyncStorage.getItem("InExToken");
-    const userId = await AsyncStorage.getItem("InExUserId");
+    const userId = selectedCirculationExec
+      ? selectedCirculationExec?.id
+      : await AsyncStorage.getItem("InExUserId");
+    // const response = selectedCirculationExec
+    //   ? selectedCirculationExec?.id
+    //   : await auth.getRigionList(userId, token);
+
     const response = await auth.getRigionList(userId, token);
+
+    console.log("response___", response);
 
     if (response?.status != 200) {
       //alert(response?.problem);
@@ -283,7 +322,10 @@ const UnsoldRetun = ({ navigation }) => {
     const userData1 = await AsyncStorage.getItem("InExUserDetails");
     const userData = JSON.parse(userData1);
 
-    if (userData?.role == "Circulation Executive") {
+    if (
+      userData?.role == "Circulation Executive" ||
+      userData?.role == "Regional Manager"
+    ) {
     } else {
       const response = await auth.depots(userId, token);
       if (response?.status != 200 && response?.status != 404) {
@@ -522,12 +564,16 @@ const UnsoldRetun = ({ navigation }) => {
       );
     } else {
       const token = await AsyncStorage.getItem("InExToken");
-      const userId = await AsyncStorage.getItem("InExUserId");
+      const userId = selectedCirculationExec
+        ? selectedCirculationExec?.id
+        : await AsyncStorage.getItem("InExUserId");
       const userData1 = await AsyncStorage.getItem("InExUserDetails");
       const userData = JSON.parse(userData1);
       let dataObj = {
         user_id: userId,
-        ship_to_code: userData?.loginId,
+        ship_to_code: selectedCirculationExec
+          ? selectedCirculationExec?.login_id
+          : userData?.loginId,
         publication_date: reqFormatDate,
         publication_id: publicationItem?.id,
         total_supply: supplyVal,
@@ -603,7 +649,8 @@ const UnsoldRetun = ({ navigation }) => {
             }}
           />
         ) : null}
-        {loginUserDetail?.role == "Circulation Executive" ? (
+        {loginUserDetail?.role == "Circulation Executive" ||
+        loginUserDetail?.role == "Regional Manager" ? (
           <>
             <View style={styles.mainview}>
               <View>
@@ -620,6 +667,20 @@ const UnsoldRetun = ({ navigation }) => {
               </View>
             </View>
             <View style={{ paddingHorizontal: 20 }}>
+              {loginUserDetail?.role == "Regional Manager" ? (
+                <CustomDropdown
+                  headerTitle="Select Circulation Executive"
+                  data={circulationExecList}
+                  selectedItem={selectedCirculationExec?.name}
+                  itemHandler={(item) => {
+                    // setPublicationItem(item);
+                    // getRigion(item?.id);
+                    setselectedCirculationExec(item);
+                  }}
+                  search={true}
+                />
+              ) : null}
+
               <CustomDropdown
                 headerTitle="Select Publication"
                 data={publicationArr}

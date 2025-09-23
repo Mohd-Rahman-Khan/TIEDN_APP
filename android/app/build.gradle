@@ -142,8 +142,8 @@ android {
         applicationId "com.indianexpress.tiedn"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 22
-        versionName "11.0.4"
+        versionCode 23
+        versionName "11.0.5"
         multiDexEnabled true
         missingDimensionStrategy 'react-native-camera', 'general'
        

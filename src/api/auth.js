@@ -1,12 +1,12 @@
-import client from './client';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import client from "./client";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 async function readToken() {
-  const token = await AsyncStorage.getItem('InExToken');
+  const token = await AsyncStorage.getItem("InExToken");
   return token;
 }
 
-const DOC_URL = client.BASE_URL + '/print/download-file/img-file?fileurl=';
+const DOC_URL = client.BASE_URL + "/print/download-file/img-file?fileurl=";
 
 const login = (
   login_id,
@@ -14,9 +14,9 @@ const login = (
   platform,
   deviceToken,
   deviceId,
-  deviceName,
+  deviceName
 ) =>
-  client.apiClient.post('/auth/login', {
+  client.apiClient.post("/auth/login", {
     login_id,
     password,
     platform,
@@ -25,233 +25,233 @@ const login = (
     deviceName,
   });
 
-const publications = token =>
+const publications = (token) =>
   client.getApiRequest.get(
-    '/masters/publications',
+    "/masters/publications",
     {},
-    {headers: {Authorization: token}},
+    { headers: { Authorization: token } }
   );
 
 const editions = (publicationId, token) =>
   client.getApiRequest.get(
-    '/masters/editions?',
-    {publicationId},
-    {headers: {Authorization: token}},
+    "/masters/editions?",
+    { publicationId },
+    { headers: { Authorization: token } }
   );
 
 const depots = (userId, token) =>
   client.getApiRequest.get(
-    '/masters/parcel-depot?',
-    {userId},
-    {headers: {Authorization: token}},
+    "/masters/parcel-depot?",
+    { userId },
+    { headers: { Authorization: token } }
   );
 
 const depotsListForRMForPO = (userId, token) =>
   client.getApiRequest.get(
     `/reports/region-wise-parcel-depot-po/${userId}`,
-    {userId},
-    {headers: {Authorization: token}},
+    { userId },
+    { headers: { Authorization: token } }
   );
 const depotsListForRMForSamplingCopy = (userId, token) =>
   client.getApiRequest.get(
     `/reports/region-wise-sampling-parcel-depot/${userId}`,
-    {userId},
-    {headers: {Authorization: token}},
+    { userId },
+    { headers: { Authorization: token } }
   );
 
 const collectionList = (data, token, id) =>
   client.getApiRequest.get(
     `/transaction/collection?${data}`,
-    {id},
-    {headers: {Authorization: token}},
+    { id },
+    { headers: { Authorization: token } }
   );
 
 const collectionListVendor = (id, token) =>
   client.getApiRequest.get(
     `/transaction/get-vendor_payment-list/${id}`,
-    {id},
-    {headers: {Authorization: token}},
+    { id },
+    { headers: { Authorization: token } }
   );
 
 const sendOTP = (token, loginId) =>
   client.getApiRequest.get(
     `/auth/send-otp/${loginId}`,
-    {loginId},
-    {headers: {Authorization: token}},
+    { loginId },
+    { headers: { Authorization: token } }
   );
 const verifyOTP = (token, data) =>
   client.getApiRequest.get(
     `/auth/otp-validate/${data}`,
-    {id},
-    {headers: {Authorization: token}},
+    { id },
+    { headers: { Authorization: token } }
   );
 const unsoldReturnList = (userId, token) =>
   client.getApiRequest.get(
     `/transaction/get-vendor-unsold-return/${userId}`,
-    {userId},
-    {headers: {Authorization: token}},
+    { userId },
+    { headers: { Authorization: token } }
   );
 
 const supply = (ship_to_code, publication_start_date, publication_id, token) =>
   client.apiClient.post(
-    '/transaction/supply',
-    {ship_to_code, publication_start_date, publication_id},
-    {headers: {Authorization: token}},
+    "/transaction/supply",
+    { ship_to_code, publication_start_date, publication_id },
+    { headers: { Authorization: token } }
   );
 
 const supplyUnsoldReturn = (
   ship_to_code,
   publication_start_date,
   publication_id,
-  token,
+  token
 ) =>
   client.apiClient.post(
-    '/transaction/unsold-supply',
-    {ship_to_code, publication_start_date, publication_id},
-    {headers: {Authorization: token}},
+    "/transaction/unsold-supply",
+    { ship_to_code, publication_start_date, publication_id },
+    { headers: { Authorization: token } }
   );
 
 const getCirculationExeSupplyUnsoldReturn = (data, token) =>
-  client.apiClient.post('/transaction/unsold-supply-list', data, {
-    headers: {Authorization: token},
+  client.apiClient.post("/transaction/unsold-supply-list", data, {
+    headers: { Authorization: token },
   });
 
 const unsoldReturnSubmit = (dataObj, token) =>
   client.apiClient.post(
-    '/transaction/unsold-return',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/transaction/unsold-return",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const depotCollection = (userId, token) =>
   client.getApiRequest.get(
-    '/masters/parcel-depot/collection-executive?',
-    {userId},
-    {headers: {Authorization: token}},
+    "/masters/parcel-depot/collection-executive?",
+    { userId },
+    { headers: { Authorization: token } }
   );
 
 const supplyCollection = (dataObj, token) =>
   client.apiClient.post(
-    '/transaction/unsold-return/details',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/transaction/unsold-return/details",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const outstandingAmountCollection = (dataObj, token) =>
   client.apiClient.post(
-    '/transaction/customer-outstanding',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/transaction/customer-outstanding",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const collectionSubmit = (dataObj, token) =>
   client.apiClient.post(
-    '/transaction/collection',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/transaction/collection",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const unsoldReturnApproval = (dataObj, token) =>
-  client.getApiRequest.get('/transaction/unsold-return?', dataObj, {
-    headers: {Authorization: token},
+  client.getApiRequest.get("/transaction/unsold-return?", dataObj, {
+    headers: { Authorization: token },
   }); //
 const unsoldReturnApprovalList = (dataObj, token) =>
   client.getApiRequest.get(
-    '/transaction/unsold-return-for-circulation?',
+    "/transaction/unsold-return-for-circulation?",
     dataObj,
     {
-      headers: {Authorization: token},
-    },
+      headers: { Authorization: token },
+    }
   ); //
 
 const b = (userId, token) =>
   client.getApiRequest.get(
-    '/transaction/unsold-return?',
-    {userId},
-    {headers: {Authorization: token}},
+    "/transaction/unsold-return?",
+    { userId },
+    { headers: { Authorization: token } }
   );
 
 const collectionApproval = (dataObj, token) =>
-  client.getApiRequest.get('/transaction/collection?', dataObj, {
-    headers: {Authorization: token},
+  client.getApiRequest.get("/transaction/collection?", dataObj, {
+    headers: { Authorization: token },
   }); //
 
 const getAttendance = (userId, token) =>
   client.getApiRequest.get(
-    '/transaction/attendance?',
-    {userId},
-    {headers: {Authorization: token}},
+    "/transaction/attendance?",
+    { userId },
+    { headers: { Authorization: token } }
   ); //
 
 const approveRejectCommon = (dataObj, token) =>
   client.apiClient.post(
-    '/transaction/approval-status',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/transaction/approval-status",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const securityDepositAmount = (userId, token) =>
   client.getApiRequest.get(
-    '/transaction/security-deposit-amount?',
-    {userId},
-    {headers: {Authorization: token}},
+    "/transaction/security-deposit-amount?",
+    { userId },
+    { headers: { Authorization: token } }
   );
 
 const checkInCheckOut = (dataObj, token) =>
   client.apiClient.post(
-    '/transaction/attendance',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/transaction/attendance",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const paymentRazorpay = (dataObj, token) =>
   client.apiClient.post(
-    '/transaction/create-order',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/transaction/create-order",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const collectionRegion = (userId, token) =>
   client.getApiRequest.get(
-    '/masters/regions?',
-    {userId},
-    {headers: {Authorization: token}},
+    "/masters/regions?",
+    { userId },
+    { headers: { Authorization: token } }
   );
 
 const sendNotification = (dataObj, token) =>
   client.apiClient.post(
-    '/notification/push',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/notification/push",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const collectionCentersRegion = (regionId, token) => {
   return client.getApiRequest.get(
-    '/masters/centers?',
-    {regionId},
-    {headers: {Authorization: token}},
+    "/masters/centers?",
+    { regionId },
+    { headers: { Authorization: token } }
   );
 };
 const collectionCentersRegionUserId = (userId, token) => {
   return client.getApiRequest.get(
-    '/masters/centers?',
-    {userId},
-    {headers: {Authorization: token}},
+    "/masters/centers?",
+    { userId },
+    { headers: { Authorization: token } }
   );
 };
 
 const collectionDepotRegion = (centerId, token) => {
   return client.getApiRequest.get(
-    '/masters/parcel-depot?',
-    {centerId},
-    {headers: {Authorization: token}},
+    "/masters/parcel-depot?",
+    { centerId },
+    { headers: { Authorization: token } }
   );
 };
 
 const paymentTransanction = (formData, token) =>
-  client.apiClient.post('/transaction/cheque-collection', formData, {
+  client.apiClient.post("/transaction/cheque-collection", formData, {
     headers: {
-      Accept: 'application/vnd.tiedn.ie.api.v1+json',
+      Accept: "application/vnd.tiedn.ie.api.v1+json",
       //Authorization: devToken,
       Authorization: token,
     },
@@ -259,16 +259,16 @@ const paymentTransanction = (formData, token) =>
 
 const fetchQrData = (dataObj, token) =>
   client.apiClient.post(
-    '/transaction/scan-coupon',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/transaction/scan-coupon",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const resetPassword = (dataObj, token) =>
   client.apiClient.post(
-    '/auth/forget-password',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/auth/forget-password",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 // const fetchQrData = (qrId, token, id) =>
@@ -279,168 +279,183 @@ const resetPassword = (dataObj, token) =>
 //   );
 const savePrintOrder = (dataObj, token) =>
   client.apiClient.post(
-    '/print/save-print-order',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/print/save-print-order",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const savePrintOrderByRM = (dataObj, token) =>
   client.apiClient.post(
-    '/print/save-print-order-for-rm',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/print/save-print-order-for-rm",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 const saveSamplingCopy = (dataObj, token) =>
   client.apiClient.post(
-    '/sample/save-sample-copy',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/sample/save-sample-copy",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const saveSamplingCopyByRM = (dataObj, token) =>
   client.apiClient.post(
-    '/sample/create-sample-copy-for-rm',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/sample/create-sample-copy-for-rm",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const getPrintOrder = (dataObj, token) =>
   client.apiClient.post(
-    '/print/get-print-order-of-mapped-user-mob',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/print/get-print-order-of-mapped-user-mob",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const getSamplingCopy = (dataObj, token) =>
   client.apiClient.post(
-    '/sample/get-sample-copy-of-mapped-user-mob',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/sample/get-sample-copy-of-mapped-user-mob",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
-const getAttendenceRadius = token =>
+const getAttendenceRadius = (token) =>
   client.getApiRequest.get(
     `/masters/get-radius`,
     {},
-    {headers: {Authorization: token}},
+    { headers: { Authorization: token } }
   );
 
 const logoutApi = (data, token) =>
   client.getApiRequest.get(
     `/auth/logout/${data}`,
     {},
-    {headers: {Authorization: token}},
+    { headers: { Authorization: token } }
   );
 
 const deleteCoupon = (couponId, token, userId) =>
   client.apiClient.post(
     `/transaction/delete-coupon/${couponId}/${userId}`,
     {},
-    {headers: {Authorization: token}},
+    { headers: { Authorization: token } }
   );
 const verifyRejectPayment = (dataObj, token) =>
   client.apiClient.post(
-    'transaction/approval-status',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "transaction/approval-status",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const updatePrintOrder = (dataObj, token) =>
   client.apiClient.post(
-    '/print/update-print-order-trade',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/print/update-print-order-trade",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const updateSampligCopy = (dataObj, token) =>
   client.apiClient.post(
-    '/sample/update-sample-copy-trade',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/sample/update-sample-copy-trade",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 const verifyRejectPrintOrder = (dataObj, token) =>
   client.apiClient.post(
-    '/print/update-print-order-status',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/print/update-print-order-status",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const verifyRejectSampleCopy = (dataObj, token) =>
   client.apiClient.post(
-    '/sample/update-sample-copy-status',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "/sample/update-sample-copy-status",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const regionWiseParcelAndDepot = (dataObj, token) =>
   client.apiClient.post(
-    'reports/region-wise-parcel-depot',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "reports/region-wise-parcel-depot",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 
 const regionWiseParcelAndDepotUnsold = (dataObj, token) =>
   client.apiClient.post(
-    'reports/region-wise-parcel-depot-for-unsold',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "reports/region-wise-parcel-depot-for-unsold",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 const regionWiseParcelAndDepotForSampling = (dataObj, token) =>
   client.apiClient.post(
-    'reports/region-wise-sampling-user',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "reports/region-wise-sampling-user",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 const getRigionList = (userId, token) =>
   client.getApiRequest.get(
     `masters/regions?userId=${userId}`,
     {},
-    {headers: {Authorization: token}},
+    { headers: { Authorization: token } }
   );
 
 const getDashboardDetail = (dataObj, token) =>
   client.apiClient.post(
-    'transaction/customer-outstanding-data-weekly',
-    {...dataObj},
-    {headers: {Authorization: token}},
+    "transaction/customer-outstanding-data-weekly",
+    { ...dataObj },
+    { headers: { Authorization: token } }
   );
 const getDashboardOfPrintOrder = (data, token) =>
-  client.getApiRequest.get(`${data}`, {}, {headers: {Authorization: token}});
+  client.getApiRequest.get(
+    `${data}`,
+    {},
+    { headers: { Authorization: token } }
+  );
 const getDashboardOfDailySales = (data, token) =>
-  client.getApiRequest.get(`${data}`, {}, {headers: {Authorization: token}});
+  client.getApiRequest.get(
+    `${data}`,
+    {},
+    { headers: { Authorization: token } }
+  );
 
 const getDashboardDetailForCollectionExe = (data, token) =>
   client.getApiRequest.get(
     `transaction/collection-mobile?${data}`,
     {},
-    {headers: {Authorization: token}},
+    { headers: { Authorization: token } }
   );
 
 const generateReceipt = (data, token) =>
   client.getApiRequest.get(
     `print/generate-pdf/${data}`,
     {},
-    {headers: {Authorization: token}},
+    { headers: { Authorization: token } }
   );
 const getTodayTradeSupply = (data, token) =>
   client.getApiRequest.get(
     `supply/view-trade/${data}`,
     {},
-    {headers: {Authorization: token}},
+    { headers: { Authorization: token } }
   );
 
 const getTodayTradeSupplyCopy = (data, token) =>
   client.getApiRequest.get(
     `supply/view-trade-sampling-copy/${data}`,
     {},
-    {headers: {Authorization: token}},
+    { headers: { Authorization: token } }
   );
 
 const deleteAccount = (userId, token) =>
   client.getApiRequest.get(
     `/auth/delete-user/${userId}`,
-    {userId},
-    {headers: {Authorization: token}},
+    { userId },
+    { headers: { Authorization: token } }
+  );
+
+const getCirculationExecListForRM = (userId, token) =>
+  client.getApiRequest.get(
+    `/reports/regional-manager-wise-circulation-executive/${userId}`,
+    { userId },
+    { headers: { Authorization: token } }
   );
 
 export default {
@@ -506,4 +521,5 @@ export default {
   sendOTP,
   verifyOTP,
   resetPassword,
+  getCirculationExecListForRM,
 };

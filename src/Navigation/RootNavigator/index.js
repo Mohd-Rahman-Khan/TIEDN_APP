@@ -1,6 +1,6 @@
-import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
 import {
   Splash,
   Login,
@@ -32,14 +32,14 @@ import {
   SamplingCopyList,
   SamplingCopyDashboard,
   DailySalesDashboard,
-} from '../../Screen';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
-import images from '../../Image';
-import FillPaymentDetail from '../../Screen/FillPaymentDetail/FillPaymentDetail';
-import ScanCoupen from '../../Screen/ScanCoupen/ScanCoupen';
-import ForgetPassword from '../../Screen/ForgetPassword/ForgetPassword';
-import VerifyOTP from '../../Screen/VerifyOTP/VerifyOTP';
-import ResetPassword from '../../Screen/ResetPassword/ResetPassword';
+} from "../../Screen";
+import { Image, Text, TouchableOpacity, View } from "react-native";
+import images from "../../Image";
+import FillPaymentDetail from "../../Screen/FillPaymentDetail/FillPaymentDetail";
+import ScanCoupen from "../../Screen/ScanCoupen/ScanCoupen";
+import ForgetPassword from "../../Screen/ForgetPassword/ForgetPassword";
+import VerifyOTP from "../../Screen/VerifyOTP/VerifyOTP";
+import ResetPassword from "../../Screen/ResetPassword/ResetPassword";
 
 const Stack = createStackNavigator();
 
@@ -50,67 +50,67 @@ export default function AppNavigator() {
         <Stack.Screen
           name="Splash"
           component={Splash}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Login"
           component={Login}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="ForgetPassword"
           component={ForgetPassword}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="VerifyOTP"
           component={VerifyOTP}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="ResetPassword"
           component={ResetPassword}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="PrivacyPolicy"
           component={PrivacyPolicy}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="TermsOfService"
           component={TermsOfService}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="AboutUs"
           component={AboutUs}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="CancellationPolicy"
           component={CancellationPolicy}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="ContactUs"
           component={ContactUs}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Profile"
           component={Profile}
-          options={{headerBackTitleVisible: false}}
+          options={{ headerBackTitleVisible: false }}
         />
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
-          options={{headerBackTitleVisible: false}}
+          options={{ headerBackTitleVisible: false }}
         />
         <Stack.Screen
           name="UnsoldRetun"
@@ -132,7 +132,7 @@ export default function AppNavigator() {
           name="PrintOrder"
           component={PrintOrder}
           options={{
-            headerTitle: 'Print Order',
+            headerTitle: "Print Order",
             headerBackTitleVisible: false,
           }}
         />
@@ -140,40 +140,40 @@ export default function AppNavigator() {
           name="SupplyCopy"
           component={SupplyCopy}
           options={{
-            headerTitle: 'PO Sampling Copy',
+            headerTitle: "PO Sampling Copy",
             headerBackTitleVisible: false,
           }}
         />
         <Stack.Screen
           name="PrintOrderList"
           component={PrintOrderList}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="SamplingCopyList"
           component={SamplingCopyList}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="SelectionOfPrintOrder"
           component={SelectionOfPrintOrder}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="CollectionList"
           component={CollectionList}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Collection"
           component={Collection}
-          options={{headerTitle: 'Collection', headerBackTitleVisible: false}}
+          options={{ headerTitle: "Collection", headerBackTitleVisible: false }}
         />
         <Stack.Screen
           name="FillPaymentDetail"
           component={FillPaymentDetail}
           options={{
-            headerTitle: 'Payment Detail',
+            headerTitle: "Payment Detail",
             headerBackTitleVisible: false,
           }}
         />
@@ -181,44 +181,44 @@ export default function AppNavigator() {
           name="ScanCoupen"
           component={ScanCoupen}
           options={{
-            headerTitle: 'Scan Coupon',
+            headerTitle: "Scan Coupon",
             headerBackTitleVisible: false,
           }}
         />
         <Stack.Screen
           name="CollectionDashboard"
           component={CollectionDashboard}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="PrintOrderDashboard"
           component={PrintOrderDashboard}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="SamplingCopyDashboard"
           component={SamplingCopyDashboard}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="DailySalesDashboard"
           component={DailySalesDashboard}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="ApprovalDashboard2"
           component={ApprovalDashboard2}
-          options={({route}) => ({
+          options={({ route }) => ({
             headerTitle: route.params?.titleName
               ? route.params?.titleName
-              : 'Approval',
+              : "Approval",
           })}
         />
         <Stack.Screen
           name="CollectionApprovalDashboard"
           component={CollectionApprovalDashboard}
           options={{
-            headerTitle: 'Outstanding Dashboard',
+            headerTitle: "Outstanding Dashboard",
             headerBackTitleVisible: false,
           }}
           //   ,
@@ -286,7 +286,7 @@ export default function AppNavigator() {
           name="CollectionApproval"
           component={CollectionApproval}
           options={{
-            headerTitle: 'View Collection',
+            headerTitle: "View Collection",
             headerBackTitleVisible: false,
           }}
           //   ,
@@ -308,20 +308,20 @@ export default function AppNavigator() {
         <Stack.Screen
           name="ApprovalDashboard"
           component={ApprovalDashboard}
-          options={({route}) => ({
+          options={({ route }) => ({
             headerBackTitleVisible: false,
             headerTitle: route.params?.titleName
               ? route.params?.titleName
-              : 'Approval Dashboard',
+              : "Approval Dashboard",
             headerRight: () => (
-              <View style={{flexDirection: 'row'}}>
-                <TouchableOpacity onPress={() => alert('searchIcon')}>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity onPress={() => alert("searchIcon")}>
                   <Image source={images.statistics} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => alert('Rearrange Icon')}>
+                <TouchableOpacity onPress={() => alert("Rearrange Icon")}>
                   <Image
                     source={images.return}
-                    style={{marginHorizontal: 10}}
+                    style={{ marginHorizontal: 10 }}
                   />
                 </TouchableOpacity>
               </View>
@@ -331,20 +331,20 @@ export default function AppNavigator() {
         <Stack.Screen
           name="Approval"
           component={Approval}
-          options={({route}) => ({
+          options={({ route }) => ({
             headerBackTitleVisible: false,
             headerTitle: route.params?.titleName
               ? route.params.titleName
-              : 'Approval',
+              : "Approval",
             headerRight: () => (
-              <View style={{flexDirection: 'row'}}>
-                <TouchableOpacity onPress={() => alert('searchIcon')}>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity onPress={() => alert("searchIcon")}>
                   <Image source={images.statistics} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => alert('Rearrange Icon')}>
+                <TouchableOpacity onPress={() => alert("Rearrange Icon")}>
                   <Image
                     source={images.return}
-                    style={{marginHorizontal: 10}}
+                    style={{ marginHorizontal: 10 }}
                   />
                 </TouchableOpacity>
               </View>
