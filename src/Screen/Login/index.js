@@ -20,6 +20,7 @@ import {
   requestUserPermission,
 } from "../../PushNotification/NotificationConfig";
 import DeviceInfo from "react-native-device-info";
+import { version } from "../../../package.json";
 
 // import AsyncStorage from '@react-native-community/async-storage';
 
@@ -39,7 +40,7 @@ const Login = ({ navigation }) => {
   const requestNotificationPermission = async () => {
     try {
       const notfPerm = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
       );
     } catch (err) {}
   };
@@ -67,7 +68,7 @@ const Login = ({ navigation }) => {
         platform,
         deviceToken,
         deviceId,
-        deviceName
+        deviceName,
       );
 
       if (response?.status != 200) {
@@ -77,7 +78,7 @@ const Login = ({ navigation }) => {
             "Login Error!",
             response?.data?.error, // <- this part is optional, you can pass an empty string
             [{ text: "OK", onPress: () => {} }],
-            { cancelable: false }
+            { cancelable: false },
           );
         } else {
           setIsLoading(false);
@@ -85,7 +86,7 @@ const Login = ({ navigation }) => {
             "Login Error!",
             response?.data?.error ? response?.data?.error : "Server Error", // <- this part is optional, you can pass an empty string
             [{ text: "OK", onPress: () => {} }],
-            { cancelable: false }
+            { cancelable: false },
           );
         }
       } else {
@@ -95,15 +96,15 @@ const Login = ({ navigation }) => {
 
         await AsyncStorage.setItem(
           "InExToken",
-          response?.headers["tiedn-ie-api-authorization"]
+          response?.headers["tiedn-ie-api-authorization"],
         );
         await AsyncStorage.setItem(
           "InExUserId",
-          JSON.stringify(response?.data?.data?.id)
+          JSON.stringify(response?.data?.data?.id),
         );
         await AsyncStorage.setItem(
           "InExUserDetails",
-          JSON.stringify(userDetails)
+          JSON.stringify(userDetails),
         );
         setIsLoading(false);
         navigation.replace("Home", {
@@ -272,6 +273,11 @@ const Login = ({ navigation }) => {
               }}
             >
               Contact Us
+            </Text>
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <Text style={{ color: "black", fontSize: 12, textAlign: "center" }}>
+              V - {version}
             </Text>
           </View>
         </View>
